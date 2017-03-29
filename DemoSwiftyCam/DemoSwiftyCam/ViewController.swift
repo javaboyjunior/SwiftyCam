@@ -40,8 +40,8 @@ class ViewController: SwiftyCamViewController, SwiftyCamViewControllerDelegate {
 	}
 
 	func swiftyCam(_ swiftyCam: SwiftyCamViewController, didTake photo: UIImage) {
-		let newVC = PhotoViewController(image: photo)
-		self.present(newVC, animated: true, completion: nil)
+//		let newVC = PhotoViewController(image: photo)
+//		self.present(newVC, animated: true, completion: nil)
 	}
 
 	func swiftyCam(_ swiftyCam: SwiftyCamViewController, didBeginRecordingVideo camera: SwiftyCamViewController.CameraSelection) {
@@ -93,6 +93,10 @@ class ViewController: SwiftyCamViewController, SwiftyCamViewControllerDelegate {
 	func swiftyCam(_ swiftyCam: SwiftyCamViewController, didSwitchCameras camera: SwiftyCamViewController.CameraSelection) {
 		print(camera)
 	}
+    
+//    override func buttonWasTapped() {
+//         // Do nothing - override super class
+//    }
 
 	@objc private func cameraSwitchAction(_ sender: Any) {
 		switchCamera()

@@ -337,41 +337,41 @@ open class SwiftyCamViewController: UIViewController {
 
 	*/
 
-	public func takePhoto() {
-
-		guard let device = videoDevice else {
-			return
-		}
-
-		if device.hasFlash == true && flashEnabled == true /* TODO: Add Support for Retina Flash and add front flash */ {
-			changeFlashSettings(device: device, mode: .on)
-			capturePhotoAsyncronously(completionHandler: { (_) in })
-
-		} else if device.hasFlash == false && flashEnabled == true && currentCamera == .front {
-			flashView = UIView(frame: view.frame)
-			flashView?.alpha = 0.0
-			flashView?.backgroundColor = UIColor.white
-			previewLayer.addSubview(flashView!)
-
-			UIView.animate(withDuration: 0.1, delay: 0.0, options: .curveEaseInOut, animations: {
-				self.flashView?.alpha = 1.0
-
-			}, completion: { (_) in
-				self.capturePhotoAsyncronously(completionHandler: { (success) in
-					UIView.animate(withDuration: 0.1, delay: 0.0, options: .curveEaseInOut, animations: {
-						self.flashView?.alpha = 0.0
-					}, completion: { (_) in
-						self.flashView?.removeFromSuperview()
-					})
-				})
-			})
-		} else {
-			if device.isFlashActive == true {
-				changeFlashSettings(device: device, mode: .off)
-			}
-			capturePhotoAsyncronously(completionHandler: { (_) in })
-		}
-	}
+//	public func takePhoto() {
+//
+//		guard let device = videoDevice else {
+//			return
+//		}
+//
+//		if device.hasFlash == true && flashEnabled == true /* TODO: Add Support for Retina Flash and add front flash */ {
+//			changeFlashSettings(device: device, mode: .on)
+//			capturePhotoAsyncronously(completionHandler: { (_) in })
+//
+//		} else if device.hasFlash == false && flashEnabled == true && currentCamera == .front {
+//			flashView = UIView(frame: view.frame)
+//			flashView?.alpha = 0.0
+//			flashView?.backgroundColor = UIColor.white
+//			previewLayer.addSubview(flashView!)
+//
+//			UIView.animate(withDuration: 0.1, delay: 0.0, options: .curveEaseInOut, animations: {
+//				self.flashView?.alpha = 1.0
+//
+//			}, completion: { (_) in
+//				self.capturePhotoAsyncronously(completionHandler: { (success) in
+//					UIView.animate(withDuration: 0.1, delay: 0.0, options: .curveEaseInOut, animations: {
+//						self.flashView?.alpha = 0.0
+//					}, completion: { (_) in
+//						self.flashView?.removeFromSuperview()
+//					})
+//				})
+//			})
+//		} else {
+//			if device.isFlashActive == true {
+//				changeFlashSettings(device: device, mode: .off)
+//			}
+//			capturePhotoAsyncronously(completionHandler: { (_) in })
+//		}
+//	}
 
 	/**
 
@@ -716,39 +716,39 @@ open class SwiftyCamViewController: UIViewController {
 	- Returns: UIImage from the image data, adjusted for proper orientation.
 	*/
 
-	fileprivate func processPhoto(_ imageData: Data) -> UIImage {
-		let dataProvider = CGDataProvider(data: imageData as CFData)
-		let cgImageRef = CGImage(jpegDataProviderSource: dataProvider!, decode: nil, shouldInterpolate: true, intent: CGColorRenderingIntent.defaultIntent)
+//	fileprivate func processPhoto(_ imageData: Data) -> UIImage {
+//		let dataProvider = CGDataProvider(data: imageData as CFData)
+//		let cgImageRef = CGImage(jpegDataProviderSource: dataProvider!, decode: nil, shouldInterpolate: true, intent: CGColorRenderingIntent.defaultIntent)
+//
+//		// Set proper orientation for photo
+//		// If camera is currently set to front camera, flip image
+//
+//		let image = UIImage(cgImage: cgImageRef!, scale: 1.0, orientation: self.getImageOrientation(forCamera: self.currentCamera))
+//
+//		return image
+//	}
 
-		// Set proper orientation for photo
-		// If camera is currently set to front camera, flip image
-
-		let image = UIImage(cgImage: cgImageRef!, scale: 1.0, orientation: self.getImageOrientation(forCamera: self.currentCamera))
-
-		return image
-	}
-
-	fileprivate func capturePhotoAsyncronously(completionHandler: @escaping(Bool) -> ()) {
-		if let videoConnection = photoFileOutput?.connection(withMediaType: AVMediaTypeVideo) {
-
-			photoFileOutput?.captureStillImageAsynchronously(from: videoConnection, completionHandler: {(sampleBuffer, error) in
-				if (sampleBuffer != nil) {
-					let imageData = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(sampleBuffer)
-					let image = self.processPhoto(imageData!)
-
-					// Call delegate and return new image
-					DispatchQueue.main.async {
-						self.cameraDelegate?.swiftyCam(self, didTake: image)
-					}
-					completionHandler(true)
-				} else {
-					completionHandler(false)
-				}
-			})
-		} else {
-			completionHandler(false)
-		}
-	}
+//	fileprivate func capturePhotoAsyncronously(completionHandler: @escaping(Bool) -> ()) {
+//		if let videoConnection = photoFileOutput?.connection(withMediaType: AVMediaTypeVideo) {
+//
+//			photoFileOutput?.captureStillImageAsynchronously(from: videoConnection, completionHandler: {(sampleBuffer, error) in
+//				if (sampleBuffer != nil) {
+//					let imageData = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(sampleBuffer)
+//					let image = self.processPhoto(imageData!)
+//
+//					// Call delegate and return new image
+//					DispatchQueue.main.async {
+//						self.cameraDelegate?.swiftyCam(self, didTake: image)
+//					}
+//					completionHandler(true)
+//				} else {
+//					completionHandler(false)
+//				}
+//			})
+//		} else {
+//			completionHandler(false)
+//		}
+//	}
 
 	/// Handle Denied App Privacy Settings
 
@@ -900,9 +900,9 @@ extension SwiftyCamViewController : SwiftyCamButtonDelegate {
 
 	/// Set UITapGesture to take photo
 
-	public func buttonWasTapped() {
-		takePhoto()
-	}
+//	public func buttonWasTapped() {
+//		takePhoto()
+//	}
 
 	/// Set UILongPressGesture start to begin video
 
