@@ -229,12 +229,12 @@ open class SwiftyCamViewController: UIViewController {
 	override open func viewDidLoad() {
 		super.viewDidLoad()
 		previewLayer = PreviewView(frame: view.bounds)
-
+        previewLayer.autoresizingMask = [ .flexibleWidth, .flexibleHeight ]
+        
 		// Add Gesture Recognizers
 
 		addGestureRecognizersTo(view: previewLayer)
 
-//		self.view.addSubview(previewLayer)
         view.insertSubview(previewLayer, at: 0)
 		previewLayer.session = session
 
