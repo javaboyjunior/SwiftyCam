@@ -228,13 +228,14 @@ open class SwiftyCamViewController: UIViewController {
 
 	override open func viewDidLoad() {
 		super.viewDidLoad()
-		previewLayer = PreviewView(frame: self.view.frame)
+		previewLayer = PreviewView(frame: view.bounds)
 
 		// Add Gesture Recognizers
 
 		addGestureRecognizersTo(view: previewLayer)
 
-		self.view.addSubview(previewLayer)
+//		self.view.addSubview(previewLayer)
+        view.insertSubview(previewLayer, at: 0)
 		previewLayer.session = session
 
 		// Test authorization status for Camera and Micophone
