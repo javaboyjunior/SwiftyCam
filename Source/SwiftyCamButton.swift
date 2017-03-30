@@ -22,10 +22,6 @@ import UIKit
 
 public protocol SwiftyCamButtonDelegate {
     
-    /// Called when UITapGestureRecognizer begins
-    
-//    func buttonWasTapped()
-    
     /// Called When UILongPressGestureRecognizer enters UIGestureRecognizerState.began
     
     func buttonDidBeginLongPress()
@@ -66,31 +62,11 @@ open class SwiftyCamButton: UIButton {
     }
     
     /// Initialization Declaration
-
     
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         createGestureRecognizers()
     }
-    
-    /// UITapGestureRecognizer Function
-    
-//    @objc fileprivate func Tap() {
-//       self.delegate?.buttonWasTapped()
-//    }
-    
-    
-    /// UILongPressGestureRecognizer Function
-
-//    @objc fileprivate func LongPress(_ sender: UILongPressGestureRecognizer!)  {
-//        if (sender.state == UIGestureRecognizerState.ended) {
-//            invalidateTimer()
-//            self.delegate?.buttonDidEndLongPress()
-//        } else if (sender.state == UIGestureRecognizerState.began) {
-//            self.delegate?.buttonDidBeginLongPress()
-//            startTimer()
-//        }
-//    }
     
     @objc func touchDown(_ sender: UIControlEvents) {
         delegate?.buttonDidBeginLongPress()
@@ -133,8 +109,5 @@ open class SwiftyCamButton: UIButton {
         addTarget(self, action: #selector(touchDown(_:)), for: UIControlEvents.touchDown)
         addTarget(self, action: #selector(touchUp(_:)), for: UIControlEvents.touchUpInside)
         addTarget(self, action: #selector(touchUp(_:)), for: UIControlEvents.touchUpOutside)
-        
-//        let longGesture = UILongPressGestureRecognizer(target: self, action: #selector(SwiftyCamButton.LongPress))
-//        self.addGestureRecognizer(longGesture)
     }
 }

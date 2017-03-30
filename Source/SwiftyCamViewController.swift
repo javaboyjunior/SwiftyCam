@@ -414,10 +414,15 @@ open class SwiftyCamViewController: UIViewController {
 
 				movieFileOutputConnection?.videoOrientation = self.getVideoOrientation()
 
-				// Start recording to a temporary file.
-				let outputFileName = UUID().uuidString
-				let outputFilePath = (NSTemporaryDirectory() as NSString).appendingPathComponent((outputFileName as NSString).appendingPathExtension("mov")!)
-				movieFileOutput.startRecording(toOutputFileURL: URL(fileURLWithPath: outputFilePath), recordingDelegate: self)
+                // Start recording to a temporary file.fileprivate var tempFilePath: URL = {
+                let tempURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("tempMovie").appendingPathExtension("mp4")
+                let tempPath = tempURL.absoluteString
+                if FileManager.default.fileExists(atPath: tempPath) {
+                    do {
+                        try FileManager.default.removeItem(atPath: tempPath)
+                    } catch { }
+                }
+				movieFileOutput.startRecording(toOutputFileURL: URL(fileURLWithPath: tempPath), recordingDelegate: self)
 				self.isVideoRecording = true
 				DispatchQueue.main.async {
 					self.cameraDelegate?.swiftyCam(self, didBeginRecordingVideo: self.currentCamera)
@@ -522,7 +527,7 @@ open class SwiftyCamViewController: UIViewController {
 		addVideoInput()
 		addAudioInput()
 		configureVideoOutput()
-		configurePhotoOutput()
+//		configurePhotoOutput()
 
 		session.commitConfiguration()
 	}
@@ -650,15 +655,15 @@ open class SwiftyCamViewController: UIViewController {
 
 	/// Configure Photo Output
 
-	fileprivate func configurePhotoOutput() {
-		let photoFileOutput = AVCaptureStillImageOutput()
-
-		if self.session.canAddOutput(photoFileOutput) {
-			photoFileOutput.outputSettings  = [AVVideoCodecKey: AVVideoCodecJPEG]
-			self.session.addOutput(photoFileOutput)
-			self.photoFileOutput = photoFileOutput
-		}
-	}
+//	fileprivate func configurePhotoOutput() {
+//		let photoFileOutput = AVCaptureStillImageOutput()
+//
+//		if self.session.canAddOutput(photoFileOutput) {
+//			photoFileOutput.outputSettings  = [AVVideoCodecKey: AVVideoCodecJPEG]
+//			self.session.addOutput(photoFileOutput)
+//			self.photoFileOutput = photoFileOutput
+//		}
+//	}
 
 	/// Orientation management
 
@@ -897,12 +902,6 @@ extension SwiftyCamViewController : SwiftyCamButtonDelegate {
 	public func setMaxiumVideoDuration() -> Double {
 		return maximumVideoDuration
 	}
-
-	/// Set UITapGesture to take photo
-
-//	public func buttonWasTapped() {
-//		takePhoto()
-//	}
 
 	/// Set UILongPressGesture start to begin video
 

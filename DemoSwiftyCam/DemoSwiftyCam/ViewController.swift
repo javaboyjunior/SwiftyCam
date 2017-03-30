@@ -39,11 +39,6 @@ class ViewController: SwiftyCamViewController, SwiftyCamViewControllerDelegate {
 		super.viewDidAppear(animated)
 	}
 
-	func swiftyCam(_ swiftyCam: SwiftyCamViewController, didTake photo: UIImage) {
-//		let newVC = PhotoViewController(image: photo)
-//		self.present(newVC, animated: true, completion: nil)
-	}
-
 	func swiftyCam(_ swiftyCam: SwiftyCamViewController, didBeginRecordingVideo camera: SwiftyCamViewController.CameraSelection) {
 		print("Did Begin Recording")
 		captureButton.growButton()
@@ -94,10 +89,6 @@ class ViewController: SwiftyCamViewController, SwiftyCamViewControllerDelegate {
 		print(camera)
 	}
     
-//    override func buttonWasTapped() {
-//         // Do nothing - override super class
-//    }
-
 	@objc private func cameraSwitchAction(_ sender: Any) {
 		switchCamera()
 	}
