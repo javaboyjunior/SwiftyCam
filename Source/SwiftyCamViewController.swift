@@ -112,7 +112,7 @@ open class SwiftyCamViewController: UIViewController {
 
 	/// Sets the maximum zoom scale allowed during Pinch gesture
 
-	public var maxZoomScale				         = CGFloat(4.0)
+    public var maxZoomScale : CGFloat			 = 4.0
   
 	/// Sets whether Tap to Focus and Tap to Adjust Exposure is enabled for the capture session
 
@@ -130,22 +130,22 @@ open class SwiftyCamViewController: UIViewController {
 
 	/// Sets whether a double tap to switch cameras is supported
 
-	public var doubleTapCameraSwitch            = true
+	public var doubleTapCameraSwitch             = true
 
 	/// Set default launch camera
 
-	public var defaultCamera                   = CameraSelection.rear
+	public var defaultCamera                     = CameraSelection.rear
 
 	/// Sets wether the taken photo or video should be oriented according to the device orientation
 
-	public var shouldUseDeviceOrientation      = false
+	public var shouldUseDeviceOrientation        = false
 
 
 	// MARK: Public Get-only Variable Declarations
 
 	/// Returns true if video is currently being recorded
 
-	private(set) public var isVideoRecording      = false
+	private(set) public var isVideoRecording     = false
 
 	/// Returns true if the capture session is currently running
 
@@ -169,11 +169,11 @@ open class SwiftyCamViewController: UIViewController {
 
 	/// Variable for storing current zoom scale
 
-	fileprivate var zoomScale                    = CGFloat(1.0)
+    fileprivate var zoomScale : CGFloat          = 1.0
 
 	/// Variable for storing initial zoom scale before Pinch to Zoom begins
 
-	fileprivate var beginZoomScale               = CGFloat(1.0)
+	fileprivate var beginZoomScale : CGFloat     = 1.0
 
 	/// Returns true if the torch (flash) is currently enabled
 
@@ -215,12 +215,23 @@ open class SwiftyCamViewController: UIViewController {
 
 	fileprivate var deviceOrientation            : UIDeviceOrientation?
 
-	/// Disable view autorotation for forced portrait recorindg
-
+	/// Disable view autorotation for forced portrait recording
 
 	override open var shouldAutorotate: Bool {
 		return false
 	}
+    
+    
+    fileprivate var tempFilePath: URL = {
+        let tempURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("tempMovie").appendingPathExtension("mp4")
+        let tempPath = tempURL.absoluteString
+        if FileManager.default.fileExists(atPath: tempPath) {
+            do {
+                try FileManager.default.removeItem(atPath: tempPath)
+            } catch { }
+        }
+        return tempURL
+    }()
 
 	// MARK: ViewDidLoad
 
@@ -269,7 +280,6 @@ open class SwiftyCamViewController: UIViewController {
 
 	/// ViewDidAppear(_ animated:) Implementation
 
-
 	override open func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 
@@ -308,7 +318,6 @@ open class SwiftyCamViewController: UIViewController {
 
 	/// ViewDidDisappear(_ animated:) Implementation
 
-
 	override open func viewDidDisappear(_ animated: Bool) {
 		super.viewDidDisappear(animated)
 
@@ -327,52 +336,6 @@ open class SwiftyCamViewController: UIViewController {
 		}
 	}
 
-	// MARK: Public Functions
-
-	/**
-
-	Capture photo from current session
-
-	UIImage will be returned with the SwiftyCamViewControllerDelegate function SwiftyCamDidTakePhoto(photo:)
-
-	*/
-
-//	public func takePhoto() {
-//
-//		guard let device = videoDevice else {
-//			return
-//		}
-//
-//		if device.hasFlash == true && flashEnabled == true /* TODO: Add Support for Retina Flash and add front flash */ {
-//			changeFlashSettings(device: device, mode: .on)
-//			capturePhotoAsyncronously(completionHandler: { (_) in })
-//
-//		} else if device.hasFlash == false && flashEnabled == true && currentCamera == .front {
-//			flashView = UIView(frame: view.frame)
-//			flashView?.alpha = 0.0
-//			flashView?.backgroundColor = UIColor.white
-//			previewLayer.addSubview(flashView!)
-//
-//			UIView.animate(withDuration: 0.1, delay: 0.0, options: .curveEaseInOut, animations: {
-//				self.flashView?.alpha = 1.0
-//
-//			}, completion: { (_) in
-//				self.capturePhotoAsyncronously(completionHandler: { (success) in
-//					UIView.animate(withDuration: 0.1, delay: 0.0, options: .curveEaseInOut, animations: {
-//						self.flashView?.alpha = 0.0
-//					}, completion: { (_) in
-//						self.flashView?.removeFromSuperview()
-//					})
-//				})
-//			})
-//		} else {
-//			if device.isFlashActive == true {
-//				changeFlashSettings(device: device, mode: .off)
-//			}
-//			capturePhotoAsyncronously(completionHandler: { (_) in })
-//		}
-//	}
-
 	/**
 
 	Begin recording video of current session
@@ -380,7 +343,6 @@ open class SwiftyCamViewController: UIViewController {
 	SwiftyCamViewControllerDelegate function SwiftyCamDidBeginRecordingVideo() will be called
 
 	*/
-
 	public func startVideoRecording() {
 		guard let movieFileOutput = self.movieFileOutput else {
 			return
@@ -415,14 +377,7 @@ open class SwiftyCamViewController: UIViewController {
 				movieFileOutputConnection?.videoOrientation = self.getVideoOrientation()
 
                 // Start recording to a temporary file.fileprivate var tempFilePath: URL = {
-                let tempURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("tempMovie").appendingPathExtension("mp4")
-                let tempPath = tempURL.absoluteString
-                if FileManager.default.fileExists(atPath: tempPath) {
-                    do {
-                        try FileManager.default.removeItem(atPath: tempPath)
-                    } catch { }
-                }
-				movieFileOutput.startRecording(toOutputFileURL: URL(fileURLWithPath: tempPath), recordingDelegate: self)
+				movieFileOutput.startRecording(toOutputFileURL: self.tempFilePath, recordingDelegate: self)
 				self.isVideoRecording = true
 				DispatchQueue.main.async {
 					self.cameraDelegate?.swiftyCam(self, didBeginRecordingVideo: self.currentCamera)
@@ -443,7 +398,6 @@ open class SwiftyCamViewController: UIViewController {
 	When video has finished processing, the URL to the video location will be returned by SwiftyCamDidFinishProcessingVideoAt(url:)
 
 	*/
-
 	public func stopVideoRecording() {
 		if self.movieFileOutput?.isRecording == true {
 			self.isVideoRecording = false
@@ -470,8 +424,6 @@ open class SwiftyCamViewController: UIViewController {
 	SwiftyCamViewControllerDelegate function SwiftyCamDidSwitchCameras(camera:  will be return the current camera selection
 
 	*/
-
-
 	public func switchCamera() {
 		guard isVideoRecording != true else {
 			//TODO: Look into switching camera during video recording
@@ -527,7 +479,6 @@ open class SwiftyCamViewController: UIViewController {
 		addVideoInput()
 		addAudioInput()
 		configureVideoOutput()
-//		configurePhotoOutput()
 
 		session.commitConfiguration()
 	}
@@ -653,18 +604,6 @@ open class SwiftyCamViewController: UIViewController {
 		}
 	}
 
-	/// Configure Photo Output
-
-//	fileprivate func configurePhotoOutput() {
-//		let photoFileOutput = AVCaptureStillImageOutput()
-//
-//		if self.session.canAddOutput(photoFileOutput) {
-//			photoFileOutput.outputSettings  = [AVVideoCodecKey: AVVideoCodecJPEG]
-//			self.session.addOutput(photoFileOutput)
-//			self.photoFileOutput = photoFileOutput
-//		}
-//	}
-
 	/// Orientation management
 
 	fileprivate func subscribeToDeviceOrientationChangeNotifications() {
@@ -684,7 +623,11 @@ open class SwiftyCamViewController: UIViewController {
 	}
 
 	fileprivate func getVideoOrientation() -> AVCaptureVideoOrientation {
-		guard shouldUseDeviceOrientation, let deviceOrientation = self.deviceOrientation else { return previewLayer!.videoPreviewLayer.connection.videoOrientation }
+		guard shouldUseDeviceOrientation,
+            let deviceOrientation = self.deviceOrientation
+        else {
+            return previewLayer!.videoPreviewLayer.connection.videoOrientation
+        }
 
 		switch deviceOrientation {
 		case .landscapeLeft:
@@ -699,7 +642,11 @@ open class SwiftyCamViewController: UIViewController {
 	}
 
 	fileprivate func getImageOrientation(forCamera: CameraSelection) -> UIImageOrientation {
-		guard shouldUseDeviceOrientation, let deviceOrientation = self.deviceOrientation else { return forCamera == .rear ? .right : .leftMirrored }
+		guard shouldUseDeviceOrientation,
+            let deviceOrientation = self.deviceOrientation
+        else {
+            return forCamera == .rear ? .right : .leftMirrored
+        }
 
 		switch deviceOrientation {
 		case .landscapeLeft:
@@ -712,48 +659,6 @@ open class SwiftyCamViewController: UIViewController {
 			return forCamera == .rear ? .right : .leftMirrored
 		}
 	}
-
-	/**
-	Returns a UIImage from Image Data.
-
-	- Parameter imageData: Image Data returned from capturing photo from the capture session.
-
-	- Returns: UIImage from the image data, adjusted for proper orientation.
-	*/
-
-//	fileprivate func processPhoto(_ imageData: Data) -> UIImage {
-//		let dataProvider = CGDataProvider(data: imageData as CFData)
-//		let cgImageRef = CGImage(jpegDataProviderSource: dataProvider!, decode: nil, shouldInterpolate: true, intent: CGColorRenderingIntent.defaultIntent)
-//
-//		// Set proper orientation for photo
-//		// If camera is currently set to front camera, flip image
-//
-//		let image = UIImage(cgImage: cgImageRef!, scale: 1.0, orientation: self.getImageOrientation(forCamera: self.currentCamera))
-//
-//		return image
-//	}
-
-//	fileprivate func capturePhotoAsyncronously(completionHandler: @escaping(Bool) -> ()) {
-//		if let videoConnection = photoFileOutput?.connection(withMediaType: AVMediaTypeVideo) {
-//
-//			photoFileOutput?.captureStillImageAsynchronously(from: videoConnection, completionHandler: {(sampleBuffer, error) in
-//				if (sampleBuffer != nil) {
-//					let imageData = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(sampleBuffer)
-//					let image = self.processPhoto(imageData!)
-//
-//					// Call delegate and return new image
-//					DispatchQueue.main.async {
-//						self.cameraDelegate?.swiftyCam(self, didTake: image)
-//					}
-//					completionHandler(true)
-//				} else {
-//					completionHandler(false)
-//				}
-//			})
-//		} else {
-//			completionHandler(false)
-//		}
-//	}
 
 	/// Handle Denied App Privacy Settings
 
