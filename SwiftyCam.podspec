@@ -32,7 +32,7 @@ A drop in Camera View Controller for capturing photos and videos from one AVSess
 
   s.ios.deployment_target = '8.0'
 
-  s.source_files = 'Source/**/*'
+  s.source_files = 'Source/**/*.swift'
 
   # s.resource_bundles = {
   #   'SwiftyCam' => ['SwiftyCam/Assets/*.png']
