@@ -223,7 +223,7 @@ open class SwiftyCamViewController: UIViewController {
     
     
     fileprivate var tempFilePath: URL = {
-        let tempURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("tempMovie").appendingPathExtension("mp4")
+        let tempURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("tempMovie").appendingPathExtension("mov")
         let tempPath = tempURL.absoluteString
         if FileManager.default.fileExists(atPath: tempPath) {
             do {
